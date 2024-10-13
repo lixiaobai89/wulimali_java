@@ -53,12 +53,7 @@
             <version>3.4.2</version>
         </dependency>
 
-        <!-- Guava dependency -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version> <!-- 检查版本是否匹配 -->
-        </dependency>
+
 
     </dependencies>
 
