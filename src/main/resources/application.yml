@@ -1,0 +1,35 @@
+server:
+  port: 8081
+
+spring:
+  #????????
+  #  profiles:
+  #    active: dev
+  #?????
+  datasource:
+    #    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #    url: jdbc:mysql://localhost:3306/deutsch?useUnicode  =true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    #    username: root
+    #    password: 123456
+
+    #    url: jdbc:mysql://localhost:3306/lxb?useUnicode  =true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    #    username: root
+    #    password: 123456
+
+    url: jdbc:mysql://47.99.78.235:3306/lxb?useUnicode  =true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: Lxb@891003
+
+snowflake:
+  datacenterId: 1
+  machineId: 1
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
