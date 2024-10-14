@@ -6,10 +6,7 @@ import com.example.lxb_website.login.entity.SysUserSaveReq;
 import com.example.lxb_website.login.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sys-user")
@@ -30,9 +27,18 @@ public class SysUserController {
     @PostMapping("login")
     public CommonResp login(@RequestBody SysUserLoginReq req) {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
-        CommonResp resp = new CommonResp();
-        boolean success = sysUserService.login(req);
-        resp.setSuccess(success);
-        return resp;
+        return sysUserService.login(req);
+    }
+
+    /**
+     * token验证
+     *
+     * @param token 令牌
+     * @return Result
+     */
+    @PostMapping(value = "/auth/{token}")
+    @ResponseBody
+    public CommonResp auth(@PathVariable String token) {
+        return sysUserService.auth(token);
     }
 }

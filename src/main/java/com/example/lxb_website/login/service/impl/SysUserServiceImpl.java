@@ -3,13 +3,16 @@ package com.example.lxb_website.login.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.lxb_website.login.entity.CommonResp;
 import com.example.lxb_website.login.entity.SysUser;
 import com.example.lxb_website.login.entity.SysUserLoginReq;
 import com.example.lxb_website.login.entity.SysUserSaveReq;
 import com.example.lxb_website.login.mapper.SysUserMapper;
 import com.example.lxb_website.login.service.SysUserService;
 import com.example.lxb_website.login.utils.CopyUtils;
+import com.example.lxb_website.login.utils.JwtUtil;
 import com.example.lxb_website.login.utils.SnowFlake;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -39,13 +42,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean login(SysUserLoginReq req) {
+    public CommonResp login(SysUserLoginReq req) {
         SysUser user = CopyUtils.copy(req, SysUser.class);
         SysUser userDb = selectByLoginName(req.getLoginName());
+        CommonResp resp = new CommonResp();
         if (user.getPassword().equals(userDb.getPassword())) {
-            return true;
+            //生成token
+            String token = JwtUtil.toToken(req.getLoginName());
+            resp.setSuccess(true);
+            resp.setContent(token);
+            return resp;
         }
-        return false;
+         return resp;
     }
 
     public SysUser selectByLoginName(String loginName) {
@@ -57,5 +65,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         } else {
             return users.get(0);
         }
+    }
+
+    /**
+     * 令牌验证
+     * @param token 令牌
+     * @return Result
+     */
+    @Override
+    public CommonResp auth(String token) {
+        CommonResp resp = new CommonResp();
+        Claims claims = JwtUtil.fromToken(token);
+        if (claims == null) {
+            resp.setSuccess(false);
+            return resp;
+        }
+        resp.setSuccess(true);
+        //生成token
+        String refToken = JwtUtil.toToken((String) claims.get(JwtUtil.ACC_NAME));
+        resp.setContent(refToken);
+        return resp;
     }
 }
